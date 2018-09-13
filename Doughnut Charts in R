@@ -1,0 +1,20 @@
+library(ggplot2)
+library (scales)
+library(readxl)
+##I just made an excel file and put it in here, do what you will
+Triggered_by_Pie_Charts <- read_excel(Triggered by Pie Charts.xlsx")
+Triggered_by_Pie_Charts$fraction = Triggered_by_Pie_Charts$`# Districts` / sum(Triggered_by_Pie_Charts$`# Districts`)
+Triggered_by_Pie_Charts = Triggered_by_Pie_Charts[order(Triggered_by_Pie_Charts$fraction), ]
+Triggered_by_Pie_Charts$ymax = cumsum(Triggered_by_Pie_Charts$fraction)
+Triggered_by_Pie_Charts$ymin = c(0, head(Triggered_by_Pie_Charts$ymax, n=-1))
+
+ggplot(Triggered_by_Pie_Charts, aes(x=1,y=fraction, fill=`Source of Funding Gap`, ymax=ymax, ymin=ymin, xmax=4, xmin=3)) + 
+  geom_rect(stat="identity", color='black') +
+  theme(plot.title = element_text(size=25, vjust=1)) +
+  coord_polar(theta='y') + 
+  theme(axis.ticks=element_blank(), axis.title=element_blank(), axis.text.y=element_blank(), axis.text.x=element_text(color='black',size=8)) + 
+  scale_y_continuous(breaks=midpoint, labels=paste(Triggered_by_Pie_Charts$`Source of Funding Gap`,"\n",Triggered_by_Pie_Charts$`# Districts`, "Districts","\n",percent(Triggered_by_Pie_Charts$`# Districts`))) + 
+  scale_fill_brewer(palette="Set1") +
+  guides(fill=FALSE) +
+  ggtitle("Doughnuts > Pie Charts") +
+  theme(plot.title = element_text(hjust = 0.5))
