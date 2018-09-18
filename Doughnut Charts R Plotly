@@ -1,0 +1,11 @@
+library(readxl)
+Triggered_by_Pie_Charts <- read_excel("~/CS Work/Triggered by Pie Charts.xlsx")
+Triggered_by_Pie_Charts$fraction = Triggered_by_Pie_Charts$`# Districts` / sum(Triggered_by_Pie_Charts$`# Districts`)
+
+library(plotly)
+Triggered_by_Pie_Charts %>%
+  plot_ly(values = ~fraction, text = ~paste(`Source of Funding Gap`,"\n",`# Districts`, 'Districts'), textposition = 'outside') %>%
+  add_pie(hole = 0.6) %>%
+  layout(showlegend = F,
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
